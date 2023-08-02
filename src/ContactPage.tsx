@@ -1,27 +1,16 @@
-import { useState, FormEvent, FormEventHandler } from 'react';
+import { Form, ActionFunctionArgs, redirect } from 'react-router-dom';
 
 type Contact = { name: string; email: string; reason: string; notes: string };
 const FieldStyle = 'flex flex-col mb-2';
 
 export function ContactPage() {
-    function handleSubmit(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const contact = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            reason: formData.get('reason'),
-            notes: formData.get('notes'),
-        } as Contact;
-        console.log('Submit contact: ', contact);
-    }
     return (
         <div className="flex flex-col py-10 max-w-md mx-auto">
             <h2 className="text-3xl font-bold underline mb-3"> Contact Us</h2>
             <p className="mb-3">
                 If you enter your details we'll get back to you as soon as we can.
             </p>
-            <form onSubmit={handleSubmit}>
+            <Form method="post">
                 <div className={FieldStyle}>
                     <label htmlFor="name">Your name</label>
                     <input type="text" id="name" name="name" />
@@ -50,7 +39,18 @@ export function ContactPage() {
                         Submit
                     </button>
                 </div>
-            </form>
+            </Form>
         </div>
     );
+}
+
+export async function contactPageAction({ request }: ActionFunctionArgs) {
+    const formData = await request.formData();
+    const contact = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        reason: formData.get('reason'),
+        notes: formData.get('notes'),
+    } as Contact;
+    return redirect(`/thank-you/${formData.get('name')}`);
 }
