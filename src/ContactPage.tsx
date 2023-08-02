@@ -1,27 +1,39 @@
-import { Form, ActionFunctionArgs, redirect } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 type Contact = { name: string; email: string; reason: string; notes: string };
 const FieldStyle = 'flex flex-col mb-2';
 
 export function ContactPage() {
+    const { register, handleSubmit } = useForm<Contact>();
+    const navigate = useNavigate();
+    function onSubmit(contact: Contact) {
+        console.log('Submit detail: ', contact);
+        navigate(`/thank-you/${contact.name}`);
+    }
     return (
         <div className="flex flex-col py-10 max-w-md mx-auto">
             <h2 className="text-3xl font-bold underline mb-3"> Contact Us</h2>
             <p className="mb-3">
                 If you enter your details we'll get back to you as soon as we can.
             </p>
-            <Form method="post">
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div className={FieldStyle}>
                     <label htmlFor="name">Your name</label>
-                    <input type="text" id="name" name="name" required />
+                    <input type="text" id="name" required {...register('name')} />
                 </div>
                 <div className={FieldStyle}>
                     <label htmlFor="email">Your email address</label>
-                    <input type="email" id="email" name="email" required pattern="\S+@\S+\.\S+" />
+                    <input
+                        type="email"
+                        id="email"
+                        required
+                        pattern="\S+@\S+\.\S+"
+                        {...register('name')}
+                    />
                 </div>
                 <div className={FieldStyle}>
                     <label htmlFor="reason">Reason you need to contact us</label>
-                    <select id="reason" name="reason" required>
+                    <select id="reason" required {...register('reason')}>
                         <option value=""></option>
                         <option value="Support">Support</option>
                         <option value="Feedback">Feedback</option>
@@ -30,7 +42,7 @@ export function ContactPage() {
                 </div>
                 <div className={FieldStyle}>
                     <label htmlFor="notes">Additional notes</label>
-                    <textarea id="notes" name="notes" required />
+                    <textarea id="notes" required {...register('notes')} />
                 </div>
                 <div>
                     <button
@@ -39,18 +51,7 @@ export function ContactPage() {
                         Submit
                     </button>
                 </div>
-            </Form>
+            </form>
         </div>
     );
-}
-
-export async function contactPageAction({ request }: ActionFunctionArgs) {
-    const formData = await request.formData();
-    const contact = {
-        name: formData.get('name'),
-        email: formData.get('email'),
-        reason: formData.get('reason'),
-        notes: formData.get('notes'),
-    } as Contact;
-    return redirect(`/thank-you/${formData.get('name')}`);
 }
