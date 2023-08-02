@@ -13,15 +13,15 @@ export function ContactPage() {
             <Form method="post">
                 <div className={FieldStyle}>
                     <label htmlFor="name">Your name</label>
-                    <input type="text" id="name" name="name" />
+                    <input type="text" id="name" name="name" required />
                 </div>
                 <div className={FieldStyle}>
                     <label htmlFor="email">Your email address</label>
-                    <input type="email" id="email" name="email" />
+                    <input type="email" id="email" name="email" required pattern="\S+@\S+\.\S+" />
                 </div>
                 <div className={FieldStyle}>
                     <label htmlFor="reason">Reason you need to contact us</label>
-                    <select id="reason" name="reason">
+                    <select id="reason" name="reason" required>
                         <option value=""></option>
                         <option value="Support">Support</option>
                         <option value="Feedback">Feedback</option>
@@ -30,7 +30,7 @@ export function ContactPage() {
                 </div>
                 <div className={FieldStyle}>
                     <label htmlFor="notes">Additional notes</label>
-                    <textarea id="notes" name="notes" />
+                    <textarea id="notes" name="notes" required />
                 </div>
                 <div>
                     <button
